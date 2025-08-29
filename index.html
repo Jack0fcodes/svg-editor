@@ -2,17 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SVG Editor</title>
+  <title>SVG Shape Editor</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>SVG Shape Editor</h1>
-  <input type="file" id="upload" accept=".svg">
+
+  <div class="toolbar">
+    <button id="addRect">Add Rectangle</button>
+    <button id="addCircle">Add Circle</button>
+    <button id="clear">Clear</button>
+    <button id="toJS">Convert to JS</button>
+  </div>
+
   <div id="editor"></div>
-  
-  <button id="toJS">Convert to JS</button>
   <pre id="output"></pre>
-  
+
+  <!-- Load SVG.js + plugins -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.0/svg.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.0/svg.draggable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.0/svg.resize.min.js"></script>
+
   <script src="script.js"></script>
 </body>
 </html>
