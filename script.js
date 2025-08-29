@@ -1,24 +1,25 @@
-const upload = document.getElementById("upload");
-const editor = document.getElementById("editor");
-const output = document.getElementById("output");
+// Create SVG canvas
+const draw = SVG().addTo('#editor').size(400, 400).viewbox(0, 0, 400, 400);
+draw.rect(400, 400).fill('#2a2a2a'); // background
 
-let svgElement = null;
-
-upload.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const text = await file.text();
-  editor.innerHTML = text; // render SVG
-  svgElement = editor.querySelector("svg");
+document.getElementById("addRect").addEventListener("click", () => {
+  const rect = draw.rect(100, 60).move(50, 50).fill('skyblue');
+  rect.draggable().resize();
 });
 
-// Convert SVG into React component
-document.getElementById("toJS").addEventListener("click", () => {
-  if (!svgElement) return alert("Upload an SVG first!");
+document.getElementById("addCircle").addEventListener("click", () => {
+  const circle = draw.circle(80).move(150, 150).fill('lightgreen');
+  circle.draggable().resize();
+});
 
-  const svgCode = svgElement.outerHTML;
-  
+document.getElementById("clear").addEventListener("click", () => {
+  draw.clear();
+  draw.rect(400, 400).fill('#2a2a2a'); // redraw background
+});
+
+document.getElementById("toJS").addEventListener("click", () => {
+  const svgCode = draw.svg();
+
   const reactSnippet = `
 export default function Icon(props) {
   return (
@@ -27,5 +28,5 @@ export default function Icon(props) {
 }
   `.trim();
 
-  output.textContent = reactSnippet;
+  document.getElementById("output").textContent = reactSnippet;
 });
