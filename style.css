@@ -1,14 +1,20 @@
-body { 
-  background: #222; 
-  color: #fff; 
-  font-family: sans-serif; 
+body {
+  background: #1c1c1c;
+  color: #fff;
+  font-family: sans-serif;
   text-align: center;
 }
-#editor svg {
-  width: 200px;
-  height: 200px;
-  border: 1px dashed #555;
-  margin: 1rem auto;
+.toolbar {
+  margin-bottom: 1rem;
+}
+#editor {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+svg {
+  border: 2px dashed #555;
+  background: #2a2a2a;
 }
 pre {
   text-align: left;
