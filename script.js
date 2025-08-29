@@ -1,64 +1,65 @@
-/* General page styling */
-body {
-  background: #1c1c1c;
-  color: #f1f1f1;
-  font-family: sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 20px;
+// Create visible SVG canvas
+const draw = SVG().addTo('#editor').size(400, 400).viewbox(0, 0, 400, 400);
+
+// Background so canvas is always visible
+const bg = draw.rect(400, 400).fill('#2a2a2a').back();
+
+let selectedShape = null; // track selected shape
+
+// Make a shape draggable, resizable, and selectable
+function makeInteractive(shape) {
+  shape.draggable().resize({
+    constraint: { minWidth: 20, minHeight: 20 },
+    handles: ['tl', 'tr', 'bl', 'br'] // only corner handles
+  });
+
+  shape.on("click", () => {
+    if (selectedShape) selectedShape.stroke({ color: null });
+    selectedShape = shape;
+    shape.front().stroke({ color: "yellow", width: 2 }); // highlight
+  });
 }
 
-/* Toolbar */
-.toolbar {
-  margin-bottom: 1rem;
-}
+// Add rectangle
+document.getElementById("addRect").addEventListener("click", () => {
+  const rect = draw.rect(100, 60).move(50, 50).fill('skyblue');
+  makeInteractive(rect);
+});
 
-.toolbar button {
-  background: #333;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  margin: 4px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
-}
+// Add circle
+document.getElementById("addCircle").addEventListener("click", () => {
+  const circle = draw.circle(80).move(150, 150).fill('lightgreen');
+  makeInteractive(circle);
+});
 
-.toolbar button:hover {
-  background: #555;
-}
+// Duplicate selected shape
+document.getElementById("duplicate").addEventListener("click", () => {
+  if (!selectedShape) return alert("Select a shape first!");
+  const clone = selectedShape.clone().move(selectedShape.x() + 20, selectedShape.y() + 20);
+  makeInteractive(clone);
+  selectedShape.stroke({ color: null }); // remove highlight from old
+  selectedShape = clone;
+  clone.stroke({ color: "yellow", width: 2 });
+});
 
-/* Editor container */
-#editor {
-  display: flex;
-  justify-content: center;
-  margin: 0 auto 1rem auto;
-  width: 420px;
-  height: 420px;
-  background: #2a2a2a;
-  border: 2px dashed #555;
-  border-radius: 10px;
-  padding: 10px;
-}
+// Clear canvas (reset background)
+document.getElementById("clear").addEventListener("click", () => {
+  draw.clear();
+  draw.rect(400, 400).fill('#2a2a2a').back(); // redraw background
+  selectedShape = null;
+});
 
-/* SVG canvas inside editor */
-#editor svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+// Export to React component
+document.getElementById("toJS").addEventListener("click", () => {
+  const svgCode = draw.svg();
 
-/* Code output box */
-pre {
-  text-align: left;
-  background: #111;
-  padding: 1rem;
-  overflow-x: auto;
-  border-radius: 8px;
-  max-width: 800px;
-  margin: 0 auto;
-  color: #0f0;
-  font-family: monospace;
-  font-size: 14px;
+  const reactSnippet = `
+export default function Icon(props) {
+  return (
+    ${svgCode.replace(/<svg/, "<svg {...props}")}
+  )
 }
+  `.trim();
+
+  document.getElementById("output").textContent = reactSnippet;
+});
